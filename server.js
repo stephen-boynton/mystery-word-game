@@ -19,6 +19,36 @@ app.use(
 	})
 );
 
+function repeatCheck(req, res, next) {
+	const guess = req.body.guess;
+	const word = req.session.word;
+	const check = dal.alreadyHave(word.letters, guess);
+	if (check > -1) {
+		res.send("You already guessed that letter.");
+	} else {
+		next();
+	}
+}
+
+function lengthCheck(req, res, next) {
+	if (req.body.guess.length > 1) {
+		res.send("You may only enter one letter at a time.");
+	} else {
+		next();
+	}
+}
+
+function winCheck(req, res, next) {
+	const word = req.session.word;
+	if (word.guesses === 0) {
+		word.guessArr = word.wordArr;
+		console.log(word.guessArr);
+		res.redirect("/");
+	} else {
+		next();
+	}
+}
+
 app.get("/", (req, res) => {
 	if (!req.session.word) {
 		const word = dal.getWord();
@@ -27,6 +57,20 @@ app.get("/", (req, res) => {
 		res.render("game", { word: req.session.word });
 	} else {
 		res.render("game", { word: req.session.word });
+	}
+});
+
+app.post("/guess", repeatCheck, lengthCheck, winCheck, (req, res) => {
+	const guess = req.body.guess.toLowerCase();
+	const word = req.session.word;
+	const isGuess = dal.guessCheck(word.wordArr, guess);
+	word.letters.push(guess);
+	if (isGuess > -1) {
+		word.guessArr = dal.update(word.wordArr, word.guessArr, guess);
+		res.redirect("/");
+	} else {
+		word.guesses -= 1;
+		res.redirect("/");
 	}
 });
 

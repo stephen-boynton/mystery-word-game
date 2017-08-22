@@ -17,18 +17,45 @@ function guessArr(wordArr) {
 	wordArr.forEach((elm, ind, arr) => {
 		guessArr[ind] = "_ ";
 	});
-	console.log(guessArr);
 	return guessArr;
 }
 
-function getWord() {
+function getWordObject() {
 	const index = randomNumber();
 	const word = words[index];
 	const wordArr = splitWord(word);
 	const guessArray = guessArr(wordArr);
-	return { word: word, wordArr: wordArr, guessArr: guessArray };
+	return {
+		word: word,
+		wordArr: wordArr,
+		guessArr: guessArray,
+		letters: [],
+		guesses: 2
+	};
+}
+
+function guessCheck(wordArr, guess) {
+	return wordArr.findIndex(elm => {
+		return elm === guess;
+	});
+}
+
+function updateGuessArr(wordArr, guessArr, guess) {
+	wordArr.forEach((elm, ind, arr) => {
+		if (elm === guess) guessArr[ind] = guess;
+	});
+	return guessArr;
+}
+
+function alreadyHave(letters, guess) {
+	return letters.findIndex(elm => {
+		return elm === guess;
+	});
 }
 
 module.exports = {
-	getWord: getWord
+	getWord: getWordObject,
+	guessCheck: guessCheck,
+	update: updateGuessArr,
+	alreadyHave: alreadyHave
 };
