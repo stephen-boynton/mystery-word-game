@@ -20,8 +20,14 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-	const word = dal.getWord();
-	res.render("game", { word: word });
+	if (!req.session.word) {
+		const word = dal.getWord();
+		console.log(word);
+		req.session.word = word;
+		res.render("game", { word: req.session.word });
+	} else {
+		res.render("game", { word: req.session.word });
+	}
 });
 
 //your routes

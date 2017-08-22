@@ -8,10 +8,25 @@ function randomNumber() {
 	return Math.floor(Math.random() * words.length);
 }
 
+function splitWord(word) {
+	return word.split("");
+}
+
+function guessArr(wordArr) {
+	const guessArr = [];
+	wordArr.forEach((elm, ind, arr) => {
+		guessArr[ind] = "_ ";
+	});
+	console.log(guessArr);
+	return guessArr;
+}
+
 function getWord() {
-	const word = randomNumber();
-	console.log(words[word]);
-	return words[word];
+	const index = randomNumber();
+	const word = words[index];
+	const wordArr = splitWord(word);
+	const guessArray = guessArr(wordArr);
+	return { word: word, wordArr: wordArr, guessArr: guessArray };
 }
 
 module.exports = {
