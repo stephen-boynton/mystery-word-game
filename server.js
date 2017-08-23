@@ -38,12 +38,28 @@ function lengthCheck(req, res, next) {
 	}
 }
 
+function successCheck(req, res, next) {
+	const guess = req.body.guess.toLowerCase();
+	const word = req.session.word;
+	const isGuess = dal.guessCheck(word.wordArr, guess);
+	word.letters.push(guess);
+	if (isGuess > -1) {
+		word.guessArr = dal.update(word.wordArr, word.guessArr, guess);
+		req.success = true;
+		res.redirect("/");
+	} else {
+		word.guesses -= 1;
+		req.success = false;
+		next();
+	}
+}
+
 function winCheck(req, res, next) {
 	const word = req.session.word;
-	if (word.guesses === 0) {
+	if (word.guesses === 0 && req.success === false) {
+		req.session.word.missing = dal.missingLetters(word.wordArr, word.guessArr);
 		word.guessArr = word.wordArr;
-		console.log(word.guessArr);
-		res.redirect("/");
+		next();
 	} else {
 		next();
 	}
@@ -60,19 +76,16 @@ app.get("/", (req, res) => {
 	}
 });
 
-app.post("/guess", repeatCheck, lengthCheck, winCheck, (req, res) => {
-	const guess = req.body.guess.toLowerCase();
-	const word = req.session.word;
-	const isGuess = dal.guessCheck(word.wordArr, guess);
-	word.letters.push(guess);
-	if (isGuess > -1) {
-		word.guessArr = dal.update(word.wordArr, word.guessArr, guess);
-		res.redirect("/");
-	} else {
-		word.guesses -= 1;
+app.post(
+	"/guess",
+	repeatCheck,
+	lengthCheck,
+	successCheck,
+	winCheck,
+	(req, res) => {
 		res.redirect("/");
 	}
-});
+);
 
 //your routes
 

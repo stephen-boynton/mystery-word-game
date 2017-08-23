@@ -30,7 +30,7 @@ function getWordObject() {
 		wordArr: wordArr,
 		guessArr: guessArray,
 		letters: [],
-		guesses: 2
+		guesses: 8
 	};
 }
 
@@ -53,9 +53,18 @@ function alreadyHave(letters, guess) {
 	});
 }
 
+function missingLetters(wordArr, guessArr) {
+	const missingLettersArr = [];
+	guessArr.forEach((elm, ind, arr) => {
+		if (elm === "_ ") missingLettersArr.push(wordArr[ind]);
+	});
+	return missingLettersArr;
+}
+
 module.exports = {
 	getWord: getWordObject,
 	guessCheck: guessCheck,
 	update: updateGuessArr,
-	alreadyHave: alreadyHave
+	alreadyHave: alreadyHave,
+	missingLetters: missingLetters
 };
