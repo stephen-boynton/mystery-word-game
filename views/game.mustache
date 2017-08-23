@@ -20,10 +20,16 @@
     {{/word.guessArr}}
   </div>
   <div class="guess">
+    <p>{{word.message}}</p>
     <form class="guess-form" action="/guess" method="post">
-      <input type="text" name="guess" autofocus="true" value="">
+      <input type="text" name="guess" autofocus="true" autocomplete="off" value="">
       <button type="submit" name="button">Guess</button>
     </form>
+    {{#word.end}}
+    <form class="won" action="/restart" method="get">
+      <button type="submit" name="button">New Game</button>
+    </form>
+    {{/word.end}}
     <h3>Letters guessed: {{#word.letters}}{{.}} {{/word.letters}}</h3>
   </div>
   <div id="hidden" class="{{#word.missing}}{{.}}{{/word.missing}}"></div>

@@ -61,10 +61,17 @@ function missingLetters(wordArr, guessArr) {
 	return missingLettersArr;
 }
 
+function haveWon(guessArr) {
+	return guessArr.findIndex(elm => {
+		return elm === "_ "
+	})
+}
+
 module.exports = {
 	getWord: getWordObject,
 	guessCheck: guessCheck,
 	update: updateGuessArr,
 	alreadyHave: alreadyHave,
-	missingLetters: missingLetters
+	missingLetters: missingLetters,
+	haveWon: haveWon
 };

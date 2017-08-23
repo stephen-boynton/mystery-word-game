@@ -23,16 +23,24 @@ function repeatCheck(req, res, next) {
 	const guess = req.body.guess;
 	const word = req.session.word;
 	const check = dal.alreadyHave(word.letters, guess);
+	word.message = "";
+	word.end = false;
 	if (check > -1) {
-		res.send("You already guessed that letter.");
+		word.message = "You already guessed that letter!"
+		res.redirect('/');
 	} else {
 		next();
 	}
 }
 
 function lengthCheck(req, res, next) {
+	const word = req.session.word;
 	if (req.body.guess.length > 1) {
-		res.send("You may only enter one letter at a time.");
+		word.message = "You may only enter one letter at a time!";
+		res.redirect('/');
+	} else if (req.body.guess.length === 0) {
+		word.message = "You're submission was blank...";
+		res.redirect('/')
 	} else {
 		next();
 	}
@@ -46,7 +54,7 @@ function successCheck(req, res, next) {
 	if (isGuess > -1) {
 		word.guessArr = dal.update(word.wordArr, word.guessArr, guess);
 		req.success = true;
-		res.redirect("/");
+		next();
 	} else {
 		word.guesses -= 1;
 		req.success = false;
@@ -56,10 +64,18 @@ function successCheck(req, res, next) {
 
 function winCheck(req, res, next) {
 	const word = req.session.word;
+	const win = dal.haveWon(word.guessArr);
+	console.log("hello!");
+	console.log(win);
 	if (word.guesses === 0 && req.success === false) {
 		req.session.word.missing = dal.missingLetters(word.wordArr, word.guessArr);
 		word.guessArr = word.wordArr;
+		word.end = true;
 		next();
+	} else if (win === -1) {
+		word.message = "YOU HAVE WON!"
+		word.end = true;
+		res.redirect("/")
 	} else {
 		next();
 	}
@@ -86,6 +102,11 @@ app.post(
 		res.redirect("/");
 	}
 );
+
+app.get("/restart", (req, res) => {
+	req.session.destroy();
+	res.redirect('/')
+})
 
 //your routes
 

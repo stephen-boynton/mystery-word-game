@@ -43,6 +43,10 @@ h2 {
 	font-weight: lighter;
 }
 
+p {
+	color: red;
+}
+
 .word {
 	display: flex;
 	width: 100%;
@@ -87,6 +91,12 @@ button {
 	font-size: 20px;
 	background: none;
 	color: white;
+	transition: background 0.5s, color 0.5s;
+}
+
+button:hover {
+	background-color: white;
+	color: black;
 }
 
 button:focus {
