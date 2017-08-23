@@ -1,3 +1,4 @@
+const form = document.querySelector("form");
 const h2s = document.querySelectorAll("h2");
 const hidden = document.getElementById("hidden");
 const hiddenClass = hidden.className;

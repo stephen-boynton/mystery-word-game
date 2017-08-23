@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Sedgwick+Ave+Display" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
   <title>Mystery Word</title>
 </head>
@@ -11,20 +12,23 @@
   <div class="container">
     <header>
       <h1>Mystery Word</h1>
-      <h3>You have {{word.guesses}} guessleft.</h3>
+      <h3>You have <span>{{word.guesses}}</span> guesses left.</h3>
     </header>
+    <div class="word">
     {{#word.guessArr}}
       <h2>{{.}}</h2>
     {{/word.guessArr}}
   </div>
   <div class="guess">
     <form class="guess-form" action="/guess" method="post">
-      <input type="text" name="guess" value="" placeholder="_">
+      <input type="text" name="guess" autofocus="true" value="">
       <button type="submit" name="button">Guess</button>
     </form>
     <h3>Letters guessed: {{#word.letters}}{{.}} {{/word.letters}}</h3>
   </div>
   <div id="hidden" class="{{#word.missing}}{{.}}{{/word.missing}}"></div>
+</div>
+
 </body>
 <script src="script.js" charset="utf-8"></script>
 
