@@ -20,9 +20,24 @@ function guessArr(wordArr) {
 	return guessArr;
 }
 
-function getWordObject() {
-	const index = randomNumber();
-	const word = words[index];
+function getWordObject(num) {
+	let word = ""
+	if(num === 1) {
+		while(word.length > 6 || word.length < 4) {
+			const index = randomNumber();
+			word = words[index];
+		}
+	} else if (num === 2) {
+		while(word.length > 8 || word.length < 6) {
+			const index = randomNumber();
+			word = words[index];
+		}
+	} else if (num === 3) {
+		while(word.length < 8) {
+			const index = randomNumber();
+			word = words[index];
+		}
+	}
 	const wordArr = splitWord(word);
 	const guessArray = guessArr(wordArr);
 	return {
@@ -38,6 +53,14 @@ function guessCheck(wordArr, guess) {
 	return wordArr.findIndex(elm => {
 		return elm === guess;
 	});
+}
+
+function containAlpha (guess) {
+	if((!/^[a-zA-Z]*$/g.test(guess))) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 function updateGuessArr(wordArr, guessArr, guess) {
@@ -72,6 +95,7 @@ module.exports = {
 	guessCheck: guessCheck,
 	update: updateGuessArr,
 	alreadyHave: alreadyHave,
+	containAlpha: containAlpha,
 	missingLetters: missingLetters,
 	haveWon: haveWon
 };

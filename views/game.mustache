@@ -22,7 +22,7 @@
   <div class="guess">
     <p>{{word.message}}</p>
     <form class="guess-form" action="/guess" method="post">
-      <input type="text" name="guess" autofocus="true" autocomplete="off" value="">
+      <input type="text" maxlength="one" min="one"name="guess" autofocus="true" autocomplete="off" value="">
       <button type="submit" name="button">Guess</button>
     </form>
     {{#word.end}}

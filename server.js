@@ -27,7 +27,7 @@ function repeatCheck(req, res, next) {
 	word.end = false;
 	if (check > -1) {
 		word.message = "You already guessed that letter!"
-		res.redirect('/');
+		res.redirect("/game");
 	} else {
 		next();
 	}
@@ -37,10 +37,21 @@ function lengthCheck(req, res, next) {
 	const word = req.session.word;
 	if (req.body.guess.length > 1) {
 		word.message = "You may only enter one letter at a time!";
-		res.redirect('/');
+		res.redirect("/game");
 	} else if (req.body.guess.length === 0) {
 		word.message = "You're submission was blank...";
-		res.redirect('/')
+		res.redirect("/game")
+	} else {
+		next();
+	}
+}
+
+function containsAlpha (req, res, next) {
+	const word = req.session.word;
+	const alpha = dal.containAlpha(req.body.guess)
+	if (alpha === false) {
+		word.message = "Invalid character.";
+		res.redirect("/game");
 	} else {
 		next();
 	}
@@ -75,20 +86,25 @@ function winCheck(req, res, next) {
 	} else if (win === -1) {
 		word.message = "YOU HAVE WON!"
 		word.end = true;
-		res.redirect("/")
+		res.redirect("/game")
 	} else {
 		next();
 	}
 }
 
 app.get("/", (req, res) => {
-	if (!req.session.word) {
-		const word = dal.getWord();
-		console.log(word);
-		req.session.word = word;
+	if(req.session.word) {
+		res.redirect("/game")
+	} else {
+	res.render("new");
+}
+})
+
+app.get("/game", (req, res) => {
+	if(req.session.word) {
 		res.render("game", { word: req.session.word });
 	} else {
-		res.render("game", { word: req.session.word });
+		res.redirect('/')
 	}
 });
 
@@ -96,16 +112,38 @@ app.post(
 	"/guess",
 	repeatCheck,
 	lengthCheck,
+	containsAlpha,
 	successCheck,
 	winCheck,
 	(req, res) => {
-		res.redirect("/");
+		res.redirect("/game");
 	}
 );
 
 app.get("/restart", (req, res) => {
 	req.session.destroy();
-	res.redirect('/')
+	res.redirect("/")
+})
+
+app.post("/easy", (req, res) => {
+		const word = dal.getWord(1);
+		console.log(word);
+		req.session.word = word;
+		res.redirect("/game");
+})
+
+app.post("/medium", (req, res) => {
+		const word = dal.getWord(2);
+		console.log(word);
+		req.session.word = word;
+		res.redirect("/game");
+})
+
+app.post("/hard", (req, res) => {
+		const word = dal.getWord(3);
+		console.log(word);
+		req.session.word = word;
+		res.redirect("/game");
 })
 
 //your routes
